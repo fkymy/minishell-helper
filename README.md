@@ -1,10 +1,10 @@
 
 ![mini shell of love](https://repository-images.githubusercontent.com/336699843/e13c1180-6bf2-11eb-9b61-49f5cfcac5e9)
 
-> The goal is to make your shell
-> If it moves like bash,
-> If it doesn't crash
-> It's a beautiful, one and only, minishell.
+> The goal is to make your shell  
+If it moves like bash,  
+If it doesn't crash  
+It's a beautiful, one and only, minishell.
 
 
 ### Usage
@@ -25,3 +25,6 @@ check:
 - `./check.sh` runs all tests
 - `./check.sh [echo, cd, pwd, export, unset, env, exit, builtin]` runs builtin command tests
 - `./check.sh [mytest.txt]` runs commandlines from a custom text file
+
+
+Feel free to contribute!
