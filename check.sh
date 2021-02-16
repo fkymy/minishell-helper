@@ -185,7 +185,7 @@ final_result()
     $PASS / $SUM
     \"The goal is to make your shell
     If it moves like bash,
-    If it doens't crash
+    If it doesn't crash
     It's a beautiful, one and only, minishell.\" - Brian Fox
 
 $RESET"
