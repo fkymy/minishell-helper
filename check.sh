@@ -353,6 +353,8 @@ test_all()
     # > redirection should redirect output to file
     run_test 'echo > a ; cat a ; rm a'
     run_test 'echo hello > a world ; cat a ; rm a'
+    run_test 'ls > a -l; cat a; rm a'
+    run_test '> a ls -l; cat a; rm a'
     run_test 'cat file > file | cat -e; rm file'
 
     # > redirection should create non-existing file
