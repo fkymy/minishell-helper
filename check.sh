@@ -23,8 +23,7 @@ TEST_ALL=0
 PASS=0
 FAIL=0
 
-startup()
-{
+startup () {
     echo > results.txt
     ls > .files_before
     make -C ${SHELL_PATH} > /dev/null
@@ -65,23 +64,20 @@ startup()
     fi
 }
 
-cleanup()
-{
+cleanup () {
     ls > .files_after
     FILESDIFF=$(diff .files_before .files_after | grep ">" | sed "s|> ||g" | tr '\n' ' ')
     rm $FILESDIFF .files_before .files_after
 }
 
-create_test_files()
-{
+create_test_files () {
     for i in {1..6}; do
         echo -n "test" > "test$i.txt"
         for j in $(seq $i); do echo -n $j >> "test$i.txt"; done
     done
 }
 
-run_test()
-{
+run_test () {
     if [ $CREATE_FILES -eq 1 ]; then
         create_test_files
     fi
@@ -132,15 +128,13 @@ run_test()
 	sleep 0.03
 }
 
-run_test_with_files()
-{
+run_test_with_files () {
     CREATE_FILES=1
     run_test $@
     CREATE_FILES=0
 }
 
-run_syntax_test()
-{
+run_syntax_test () {
 
     MSH_RESULT=$(echo $@ "; exit" | ./minishell 2> /dev/null)
 	MSH_STATUS=$?
@@ -176,8 +170,7 @@ run_syntax_test()
 	sleep 0.03
 }
 
-final_result()
-{
+final_result () {
 	SUM=PASS
 	let SUM+=$FAIL
 	if [ $FAIL -ne 0 ] ; then
@@ -227,10 +220,7 @@ $RESET"
 	printf "%s\n" "Please do your own signal testing."
 }
 
-test_all()
-{
-    ### Mandatory Part
-
+test_all () {
     ### Syntax error
     run_syntax_test ';'
     run_syntax_test '|'
@@ -366,17 +356,11 @@ test_all()
     run_test 'rm test1.txt ; echo aaa >> test1.txt ; echo bbb >> test1.txt ; cat test1.txt'
     run_test_with_files 'echo aaa >> test1.txt >> test2.txt >> test3.txt ; echo bbb >> test1.txt >> test2.txt >> test3.txt ; cat test1.txt test2.txt test3.txt'
 
-    # redirection should work with file descriptors
-    run_test 'echo hello 2> a; file a; cat a; rm a'
-    run_test 'asdf 2> a; file a; cat a; rm a'
-    run_test 'asdf 2> a; file a; cat a; rm a'
-
     # redirections should work in mix
     run_test_with_files 'wc < test1.txt < test2.txt > test3.txt > test4.txt < test5.txt > test6.txt'
     run_test_with_files 'cat > test2.txt > test3.txt > test4.txt < test1.txt'
     run_test_with_files 'echo | cat | wc > a < test6.txt ; cat a; rm a'
     run_test_with_files 'echo test666666 >> test6.txt | head -n 1 < test6.txt > test1.txt ; wc > test2.txt < test1.txt ; cat test2.txt'
-    run_teset 'echo a 2> a > b ; cat a b ; rm a b'
 
     # redirections and pipes
     run_test_with_files 'cat test1.txt | cat < test2.txt'
@@ -560,20 +544,6 @@ test_all()
     run_test "export A='' B=\" \" C=\"    \" D=\"  d \" ; echo \$A \$B \$C \$D | cat -e ; echo \$A\$B''\"\$C\"\$D | cat -e"
     run_test "export A='a' B=' ' C=' c ' ; echo \$A\$B\$A | cat -e ; echo \$A\$A\$A \$A \$A | cat -e ; echo \$C\$B \$B\$C | cat -e ; echo \$A\$C \$A\$B\$C"
     run_test "export A='a' B=' ' ; echo \$A\$B\$A ; echo \$A \$B \$A; echo \$A\$B\$B\$B\$A"
-
-    ### Optional
-
-    # export _="1 2 3" ; echo $_
-
-    # Tilda Expansion (optional?)
-    #run_test 'echo ~'
-    #run_test 'echo ~~'
-    #run_test 'echo ~ ~'
-    #run_test 'echo ~/tildaaaa'
-    #run_test 'echo ~//'
-    #run_test 'echo ~/ /'
-    #run_test 'ls ~'
-    #run_test 'ls ~'
 }
 
 test_builtin()
@@ -664,8 +634,7 @@ test_echo()
     # run_test 'echo "1 2 3" ; echo $_ ; echo $_'
 }
 
-test_cd()
-{
+test_cd () {
     run_test 'mkdir a b ; cd a ; cd ../b ; pwd ; cd .. ; pwd ; echo $PWD ; echo $OLDPWD ; rm -rf a b'
     run_test 'mkdir -p a/aa b ; cd a/aa ; cd ../../b/bb ; pwd ; echo $PWD ; echo $OLDPWD ; cd ../.. ; rm -fr a b'
     run_test 'mkdir a ; ln -s a aa ; cd aa ; rm ../aa ; cd . ; pwd ; echo $PWD ; echo $OLDPWD ; rm -fr a'
@@ -828,8 +797,7 @@ test_cd()
     chmod 777 d; rm -rf d
 }
 
-test_pwd()
-{
+test_pwd () {
     run_test 'pwd'
     run_test 'pwd | cat -e'
     run_test 'unset PWD ; pwd'
@@ -851,8 +819,7 @@ test_pwd()
     run_test 'echo $PWD ; echo $OLDPWD ; cd ; echo $OLDPWD'
 }
 
-test_export()
-{
+test_export () {
     run_test 'export | sort | grep -v SHLVL | grep -v _='
     run_test 'export ECHO="echo   " ; $ECHO 1'
     run_test 'export ECHO="echo""   " ; $ECHO 1'
@@ -876,8 +843,7 @@ test_export()
     run_test "export A=aaa ; export A+=bbb ; echo \$A"
 }
 
-test_unset()
-{
+test_unset () {
     run_test "unset '   ' ; echo \$?"
     run_test "unset '' '' ; echo \$?"
     run_test "unset \"     USER\" ; echo \$USER ; echo \$?"
@@ -886,16 +852,14 @@ test_unset()
     run_test 'unset ; unset ; unset ; echo $?'
 }
 
-test_env()
-{
+test_env () {
     # env
     run_test 'env | sort | grep -v SHLVL | grep -v _='
     run_test 'unset USER HOME AAA; env | sort | grep -v SHLVL | grep -v _='
     run_test "export _ABC ; env | grep _ABC ; export _DEF= ; env | grep _DEF ; export _GHI='hello there' ; env | grep _GHI"
 }
 
-test_exit()
-{
+test_exit () {
     run_test "exit -"
     run_test "exit '    +1'"
     run_test "exit '    -1'"
