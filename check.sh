@@ -319,7 +319,7 @@ test_all () {
     run_test 'ls | wc | wc ; echo test'
     run_test 'ls | wc | wc ; echo test | wc'
     run_test "echo \$USER \"  \$HOME  \" | cat | head -n 1 | cat | cat | wc"
-    run_test 'cat /dev/random | head -c 100 | wc -c'
+    run_test 'cat /dev/urandom | head -c 100 | wc -c'
     # run_test 'sleep 1 | echo 1 ; sleep 2 | echo 2'
 
 
