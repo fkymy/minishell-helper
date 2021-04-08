@@ -136,9 +136,9 @@ run_test_with_files () {
 
 run_syntax_test () {
 
-    MSH_RESULT=$(echo $@ "; exit" | ./minishell 2> /dev/null)
+    MSH_RESULT=$(echo $@ | ./minishell 2> /dev/null)
 	MSH_STATUS=$?
-	BASH_RESULT=$(echo $@ "; exit" | bash 2> /dev/null)
+	BASH_RESULT=$(echo $@ | bash 2> /dev/null)
 	BASH_STATUS=$?
 
 	if [ "$MSH_RESULT" == "$BASH_RESULT" ] && [ $MSH_STATUS -gt 0 ]; then
@@ -176,7 +176,7 @@ final_result () {
 	if [ $FAIL -ne 0 ] ; then
 	echo -ne "$RED
     $PASS / $SUM
-    \"The goal is to make your shell
+    \"The goal is to make your own shell
     If it moves like bash,
     If it doesn't crash
     It's a beautiful, one and only, minishell.\" - Brian Fox
@@ -319,7 +319,7 @@ test_all () {
     run_test 'ls | wc | wc ; echo test'
     run_test 'ls | wc | wc ; echo test | wc'
     run_test "echo \$USER \"  \$HOME  \" | cat | head -n 1 | cat | cat | wc"
-    run_test 'cat /dev/random | head -c 100 | wc -c'
+    run_test 'cat /dev/urandom | head -c 100 | wc -c'
     # run_test 'sleep 1 | echo 1 ; sleep 2 | echo 2'
 
 
