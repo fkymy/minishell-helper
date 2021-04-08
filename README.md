@@ -1,7 +1,7 @@
 
 ![mini shell of love](https://repository-images.githubusercontent.com/336699843/e13c1180-6bf2-11eb-9b61-49f5cfcac5e9)
 
-> The goal is to make your shell  
+> The goal is to make your own shell  
 If it moves like bash,  
 If it doesn't crash  
 It's a beautiful, one and only, minishell.
@@ -19,7 +19,7 @@ It might help if you have a rule like this in your Makefile:
 
 ```Makefile
 check:
-	@cd minishell-checker && bash check.sh
+	@cd minishell-helper && bash check.sh
 ```
 
 - `./check.sh` runs all tests
