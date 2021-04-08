@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# User Settings
+readonly SHELL_PATH='..'
+readonly LOG_FILE='results.txt'
+
+# Flags
+TEST_ALL=0
+CREATE_FILES=0
+PASS=0
+FAIL=0
+
 RESET="\033[0m"
 BLACK="\033[30m"
 RED="\033[31m"
@@ -18,57 +28,62 @@ BOLDMAGENTA="\033[1m\033[35m"
 BOLDCYAN="\033[1m\033[36m"
 BOLDWHITE="\033[1m\033[37m"
 
-SHELL_PATH=../
-TEST_ALL=0
-PASS=0
-FAIL=0
+init_files () {
+    touch "${LOG_FILE}" ".files_before" ".files_after"
+    ls > ".files_before"
+}
 
-startup () {
-    echo > results.txt
-    ls > .files_before
-    make -C ${SHELL_PATH} > /dev/null
-    cp ${SHELL_PATH}minishell .
-    chmod 755 minishell
-    CREATE_FILES=0
+build_executable () {
+    if ! make -C "${SHELL_PATH}" > /dev/null; then
+        echo "Unable to run make"
+        exit 1
+    fi
 
-    if [ $# -eq 0 ]; then
-        TEST_ALL=1
-        test_all
+    cp "${SHELL_PATH}/minishell" .
+}
+
+test_custom () {
+    if [[ -f "$1" ]]; then
+        while IFS= read -r line; do
+            run_test "${line}"
+        done < "$1"
     else
-        for var in $@; do
-            if [ "$var" = "builtin" ]; then
-                test_builtin
-            elif [ "$var" = "echo" ]; then
-                test_echo
-            elif [ "$var" = "cd" ]; then
-                test_cd
-            elif [ "$var" = "pwd" ]; then
-                test_pwd
-            elif [ "$var" = "export" ]; then
-                test_export
-            elif [ "$var" = "unset" ]; then
-                test_unset
-            elif [ "$var" = "env" ]; then
-                test_env
-            elif [ "$var" = "exit" ]; then
-                test_exit
-            elif [ ! -f "$var" ]; then
-                printf "File '$var' does not exist\n"
-                continue
-            else
-                while IFS= read -r line; do
-                    run_test "$line"
-                done < "$var"
-            fi
-        done
+        printf "$1: file does not exist\n"
     fi
 }
 
 cleanup () {
-    ls > .files_after
+    ls > ".files_after"
     FILESDIFF=$(diff .files_before .files_after | grep ">" | sed "s|> ||g" | tr '\n' ' ')
     rm $FILESDIFF .files_before .files_after
 }
+
+main () {
+    init_files
+    build_executable
+
+    if (( $# == 0 )); then
+        test_all
+        return
+    fi
+
+    for arg in "$@"; do
+        case "${arg}" in
+            echo) test_echo ;;
+            cd) test_cd ;;
+            pwd) test_pwd ;;
+            export) test_export ;;
+            unset) test_unset ;;
+            env) test_env ;;
+            exit) test_exit ;;
+            *) test_custom "${arg}" ;;
+        esac
+    done
+
+    final_result
+    cleanup
+}
+
 
 create_test_files () {
     for i in {1..6}; do
@@ -911,6 +926,4 @@ test_exit () {
     run_test 'echo -123 | exit ; echo $?'
 }
 
-startup $@
-final_result
-cleanup
+main "$@"
