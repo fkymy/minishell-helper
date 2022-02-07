@@ -1,3 +1,5 @@
+> :bulb: Test cases are slightly outdated (and too harsh).
+> I recommend using this script as a starting point, while editing test cases to match your subject version. Feel free to contribute!
 
 ![mini shell of love](https://repository-images.githubusercontent.com/336699843/e13c1180-6bf2-11eb-9b61-49f5cfcac5e9)
 
@@ -26,6 +28,3 @@ check:
 - `./check.sh [echo, cd, pwd, export, unset, env, exit]` runs builtin command tests
 - `./check.sh [mytest.txt]` runs commandlines from a custom text file
 
-
-
-Feel free to contribute!
